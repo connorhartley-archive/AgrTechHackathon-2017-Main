@@ -56,6 +56,10 @@ public class SerialSocket {
         this.serial.writeln(string);
     }
 
+    public void close() throws IOException {
+        this.serial.close();
+    }
+
     public static class Builder {
 
         private String name;
