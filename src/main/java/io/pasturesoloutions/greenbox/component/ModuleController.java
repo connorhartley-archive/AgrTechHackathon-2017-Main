@@ -1,6 +1,5 @@
-package io.pasturesoloutions.greenbox.module;
+package io.pasturesoloutions.greenbox.component;
 
-import io.pasturesoloutions.greenbox.GreenBox;
 import io.pasturesoloutions.greenbox.GreenBoxAPI;
 
 import java.lang.reflect.Constructor;

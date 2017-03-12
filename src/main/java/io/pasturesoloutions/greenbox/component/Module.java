@@ -1,4 +1,4 @@
-package io.pasturesoloutions.greenbox.module;
+package io.pasturesoloutions.greenbox.component;
 
 public interface Module {
 
