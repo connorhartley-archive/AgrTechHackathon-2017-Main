@@ -1,6 +1,7 @@
 package io.pasturesoloutions.greenbox.module;
 
 import io.pasturesoloutions.greenbox.GreenBox;
+import io.pasturesoloutions.greenbox.GreenBoxAPI;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,17 +11,17 @@ import java.util.Optional;
 
 public class ModuleController {
 
-    private final GreenBox greenBox;
+    private final GreenBoxAPI greenBox;
 
     private List<Object> loadedModules = new ArrayList<>();
 
-    public ModuleController(GreenBox greenBox) {
+    public ModuleController(GreenBoxAPI greenBox) {
         this.greenBox = greenBox;
     }
 
     public Optional<Module> constructModule(Class<? extends Module> module) {
         try {
-            Constructor<?> ctor = module.getConstructor(GreenBox.class);
+            Constructor<?> ctor = module.getConstructor(GreenBoxAPI.class);
             Module moduleInstance = (Module) ctor.newInstance(this.greenBox);
             loadedModules.add(moduleInstance);
             return Optional.of(moduleInstance);
