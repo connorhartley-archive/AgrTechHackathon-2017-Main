@@ -14,6 +14,7 @@ public class SensorBoard implements Module {
     private final long pingTime = 40;
 
     private SerialSocket serial;
+    private boolean close = false;
 
     public SensorBoard(GreenBoxAPI greenBox) {
         this.greenBox = greenBox;
@@ -30,9 +31,8 @@ public class SensorBoard implements Module {
                 .listener(this::readFrom)
                 .build("sensor_board");
         try {
-            this.serial.write(Interpreter.post("mainStatus", "main", "0.0.1", String.valueOf(this.greenBox.getSchedulerController().getTicks())));
-            this.serial.write(Interpreter.get("status", "id", "version", "ticks"));
-        } catch (IOException e) {
+            this.serial.open();
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -41,8 +41,8 @@ public class SensorBoard implements Module {
     public void update() {
         if (this.pingTime == this.greenBox.getSchedulerController().getTicks()) {
             try {
-                this.serial.write(Interpreter.post("mainStatus", "main", "0.0.1", String.valueOf(this.greenBox.getSchedulerController().getTicks())));
-                this.serial.write(Interpreter.get("status", "id", "version", "ticks"));
+                this.serial.write(Interpreter.post("mainStatus","UP", "main", "0.0.1", String.valueOf(this.greenBox.getSchedulerController().getTicks())));
+                this.serial.write(Interpreter.get("status", "state", "id", "version", "ticks"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -51,10 +51,33 @@ public class SensorBoard implements Module {
 
     @Override
     public void shutdown() {
-
+        try {
+            this.serial.write(Interpreter.post("mainStatus", "DOWN", "main", "0.0.1", String.valueOf(this.greenBox.getSchedulerController().getTicks())));
+            this.serial.write(Interpreter.get("status", "state", "id", "version", "ticks"));
+            this.close = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void readFrom(SerialDataEvent event) {
+        try {
+            Interpreter.Response message = Interpreter.read(event.getAsciiString());
+            if (message.getState() == "->") {
+                this.handlePost(message);
+            } else {
+                this.handleGet(message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handlePost(Interpreter.Response response) {
+
+    }
+
+    public void handleGet(Interpreter.Response response) {
 
     }
 

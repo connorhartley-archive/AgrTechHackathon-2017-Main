@@ -17,7 +17,7 @@ public class Interpreter {
 
         return "-> " +
                 method +
-                " {" +
+                " { " +
                 Arrays.toString(parsedValues) +
                 " }";
     }
@@ -35,20 +35,47 @@ public class Interpreter {
 
         return "<- " +
                 method +
-                " {" +
+                " { " +
                 Arrays.toString(parsedKeys) +
                 " }";
     }
 
     public static Response read(String message) {
-        // TODO: Inbound reading.
-        return null;
+        String[] part1 = message.split(" ");
+        String state = part1[0];
+        String method = part1[1];
+
+        String[] dataParts = {};
+
+        for (int i = 0; i < (part1.length - 4); i++) {
+            dataParts[i] = part1[i + 4].replace(",", "");
+        }
+
+        return new Response(state, method, dataParts);
     }
 
     public static class Response {
 
-        public Response(String status, String method, String... data) {
+        private final String state;
+        private final String method;
+        private final String[] data;
 
+        public Response(String state, String method, String... data) {
+            this.state = state;
+            this.method = method;
+            this.data = data;
+        }
+
+        public String getState() {
+            return this.state;
+        }
+
+        public String getMethod() {
+            return this.method;
+        }
+
+        public String[] getData() {
+            return this.data;
         }
 
     }
