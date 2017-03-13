@@ -14,6 +14,11 @@ public class SensorBoard implements Module {
     private final long pingTime = 40;
 
     private SerialSocket serial;
+    private String state;
+    private String id;
+    private String version;
+    private String ticks;
+
     private boolean close = false;
 
     public SensorBoard(GreenBoxAPI greenBox) {
@@ -74,7 +79,14 @@ public class SensorBoard implements Module {
     }
 
     public void handlePost(Interpreter.Response response) {
-
+        switch (response.getMethod()) {
+            case "status": {
+                this.state = response.getData()[0];
+                this.id = response.getData()[1];
+                this.version = response.getData()[2];
+                this.ticks = response.getData()[3];
+            }
+        }
     }
 
     public void handleGet(Interpreter.Response response) {
